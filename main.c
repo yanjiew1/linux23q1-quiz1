@@ -14,19 +14,12 @@ static void insert_test_data(struct list_head *head)
     }
 }
 
-int cmp(void *priv, const struct list_head *a, const struct list_head *b)
-{
-    const struct item *ia = list_entry(a, struct item, list);
-    const struct item *ib = list_entry(b, struct item, list);
-    return ia->i - ib->i;
-}
-
 uint64_t q1_sort_time()
 {
     LIST_HEAD(list);
     insert_test_data(&list);
     uint64_t start = cpucycles();
-    q1_sort(&list);
+    q1_sort(NULL, &list, cmpint);
     uint64_t end = cpucycles();
     return end - start;
 }
@@ -36,7 +29,7 @@ uint64_t q2_sort_time()
     LIST_HEAD(list);
     insert_test_data(&list);
     uint64_t start = cpucycles();
-    q2_sort(&list);
+    q2_sort(NULL, &list, cmpint);
     uint64_t end = cpucycles();
     return end - start;
 }
@@ -46,7 +39,7 @@ uint64_t q2_sort_v1_time()
     LIST_HEAD(list);
     insert_test_data(&list);
     uint64_t start = cpucycles();
-    q2_sort_v1(NULL, &list, cmp);
+    q2_sort_v1(NULL, &list, cmpint);
     uint64_t end = cpucycles();
     return end - start;
 }

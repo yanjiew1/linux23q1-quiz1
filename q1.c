@@ -1,8 +1,9 @@
 #include <stdint.h>
 #include "list.h"
+#include "list_sort.h"
 #include "q1q2.h"
 
-void q1_sort(struct list_head *head)
+void q1_sort(void *priv, struct list_head *head, list_cmp_func_t cmp)
 {
     if (list_empty(head) || list_is_singular(head))
         return;
@@ -11,21 +12,21 @@ void q1_sort(struct list_head *head)
     INIT_LIST_HEAD(&list_less);
     INIT_LIST_HEAD(&list_greater);
 
-    struct item *pivot = list_first_entry(head, struct item, list);
-    list_del(&pivot->list);
+    struct list_head *pivot = head->next;
+    list_del(pivot);
 
-    struct item *itm = NULL, *is = NULL;
-    list_for_each_entry_safe (itm, is, head, list) {
-        if (cmpint(&itm->i, &pivot->i) < 0)
-            list_move(&itm->list, &list_less);
+    struct list_head *itm = NULL, *is = NULL;
+    list_for_each_safe (itm, is, head) {
+        if (cmp(NULL, itm, pivot) < 0)
+            list_move(itm, &list_less);
         else
-            list_move(&itm->list, &list_greater);
+            list_move(itm, &list_greater);
     }
 
-    q1_sort(&list_less);
-    q1_sort(&list_greater);
+    q1_sort(NULL, &list_less, cmp);
+    q1_sort(NULL, &list_greater, cmp);
 
-    list_add(&pivot->list, head);
+    list_add(pivot, head);
     list_splice(&list_less, head);
     list_splice_tail(&list_greater, head);
 }

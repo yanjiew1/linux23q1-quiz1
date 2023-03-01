@@ -1,9 +1,9 @@
-#include "q1q2.h"
 #include "list.h"
 #include "list_sort.h"
+#include "q1q2.h"
 #define MAX_DEPTH 512
 
-void q2_sort(struct list_head *head)
+void q2_sort(void *priv, struct list_head *head, list_cmp_func_t cmp)
 {
     if (list_empty(head) || list_is_singular(head))
         return;
@@ -24,21 +24,20 @@ void q2_sort(struct list_head *head)
             struct list_head list_less, list_greater;
             INIT_LIST_HEAD(&list_less);
             INIT_LIST_HEAD(&list_greater);
-            struct item *pivot =
-                list_first_entry(&partition, struct item, list);
-            list_del(&pivot->list);
-            INIT_LIST_HEAD(&pivot->list);
+            struct list_head *pivot = partition.next;
+            list_del(pivot);
+            INIT_LIST_HEAD(pivot);
 
-            struct item *itm = NULL, *is = NULL;
-            list_for_each_entry_safe (itm, is, &partition, list) {
-                list_del(&itm->list);
-                if (cmpint(&itm->i, &pivot->i) < 0)
-                    list_move(&itm->list, &list_less);
+            struct list_head *itm = NULL, *is = NULL;
+            list_for_each_safe (itm, is, &partition) {
+                list_del(itm);
+                if (cmp(NULL, itm, pivot) < 0)
+                    list_move(itm, &list_less);
                 else
-                    list_move(&itm->list, &list_greater);
+                    list_move(itm, &list_greater);
             }
 
-            list_move_tail(&pivot->list, &list_less);
+            list_move_tail(pivot, &list_less);
             if (!list_empty(&list_greater))
                 list_splice_tail(&list_greater, &stack[++top]);
             if (!list_empty(&list_less))
@@ -47,11 +46,10 @@ void q2_sort(struct list_head *head)
             top++;
             list_splice_tail(&partition, &stack[top]);
             while (top >= 0 && list_is_singular(&stack[top])) {
-                struct item *tmp =
-                    list_first_entry(&stack[top], struct item, list);
-                list_del(&tmp->list);
+                struct list_head *tmp = stack[top].next;
+                list_del(tmp);
                 INIT_LIST_HEAD(&stack[top--]);
-                list_add_tail(&tmp->list, head);
+                list_add_tail(tmp, head);
             }
         }
     }

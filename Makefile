@@ -32,7 +32,7 @@ ifeq ("$(SANITIZER)","1")
 endif
 
 
-OBJS := main.o q1.o q2.o
+OBJS := main.o q1.o q2.o q1q2.o
 
 deps := $(OBJS:%.o=.%.o.d)
 
