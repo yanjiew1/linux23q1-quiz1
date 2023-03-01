@@ -4,4 +4,6 @@
 - Linux 風格的 doubly-linked list 的相關排序實作
 - xor linked list
 
-敬請期待
+作業相關連結：
+* [作業解說](https://hackmd.io/@sysprog/linux2023-quiz1)
+* [作業詳解](https://hackmd.io/@yanjiew/linux2023q1-quiz1)
