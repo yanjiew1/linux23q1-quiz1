@@ -7,7 +7,7 @@
 static void insert_test_data(struct list_head *head)
 {
     struct item *itm = NULL;
-    for (int i = 0; i < 100000; i++) {
+    for (int i = 0; i < 10000; i++) {
         itm = malloc(sizeof(struct item));
         itm->i = rand();
         list_add_tail(&itm->list, head);

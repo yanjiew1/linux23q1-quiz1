@@ -8,4 +8,3 @@ int cmpint(void *priv, const struct list_head *a, const struct list_head *b)
     const struct item *ib = list_entry(b, struct item, list);
     return ia->i - ib->i;
 }
-
