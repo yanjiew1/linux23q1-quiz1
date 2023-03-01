@@ -2,6 +2,7 @@
 #define _Q1Q2_H
 
 #include "list.h"
+#include "list_sort.h"
 #include <stdint.h>
 
 struct item {
@@ -18,5 +19,6 @@ static inline int cmpint(const void *p1, const void *p2)
 
 void q1_sort(struct list_head *head);
 void q2_sort(struct list_head *head);
+void q2_sort_v1(void *priv, struct list_head *head, list_cmp_func_t cmp);
 
 #endif

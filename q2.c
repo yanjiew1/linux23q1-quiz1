@@ -1,4 +1,6 @@
 #include "q1q2.h"
+#include "list.h"
+#include "list_sort.h"
 #define MAX_DEPTH 512
 
 void q2_sort(struct list_head *head)
@@ -51,6 +53,60 @@ void q2_sort(struct list_head *head)
                 INIT_LIST_HEAD(&stack[top--]);
                 list_add_tail(&tmp->list, head);
             }
+        }
+    }
+}
+
+void q2_sort_v1(void *priv, struct list_head *head, list_cmp_func_t cmp)
+{
+    if (list_empty(head) || list_is_singular(head))
+        return;
+
+    /* The stack top */
+    struct list_head *top = head->next;
+    /* Convert to a null-terminated singly-linked list. */
+    head->prev->next = NULL;
+    top->prev = NULL;
+    INIT_LIST_HEAD(head);
+
+    while (top) {
+        /* Pop from the stack */
+        struct list_head *pivot = top;
+        top = top->prev;
+        if (!pivot->next) {
+            list_add_tail(pivot, head);
+            continue;
+        }
+
+        struct list_head *less = NULL, *greater = pivot->next;
+        struct list_head **indirect = &greater;
+        struct list_head **tail = &less;
+        pivot->next = NULL;
+
+        /* Walk through the list and partition */
+        while (*indirect) {
+            struct list_head *node = *indirect;
+            if (cmp(priv, pivot, node) <= 0) {
+                indirect = &(*indirect)->next;
+                continue;
+            }
+            /* Move to less list */
+            *indirect = node->next;
+            *tail = node;
+            node->next = NULL;
+            tail = &node->next;
+        }
+
+        /* Put pivot at the end of less list */
+        *tail = pivot;
+        /* Push greater and less list into stack */
+        if (greater) {
+            greater->prev = top;
+            less->prev = greater;
+            top = less;
+        } else {
+            less->prev = top;
+            top = less;
         }
     }
 }
