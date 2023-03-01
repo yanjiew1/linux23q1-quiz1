@@ -11,6 +11,8 @@ struct item {
 };
 
 int cmpint(void *priv, const struct list_head *a, const struct list_head *b);
+int list_size(struct list_head *head);
+void list_shuffle(struct list_head *head);
 
 void q1_sort(void *priv, struct list_head *head, list_cmp_func_t cmp);
 void q2_sort(void *priv, struct list_head *head, list_cmp_func_t cmp);
